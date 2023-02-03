@@ -2,6 +2,7 @@ import asyncio
 import aiohttp
 from bs4 import BeautifulSoup
 from flask import Flask
+import json
 import os
 
 loop = asyncio.get_event_loop()
@@ -15,8 +16,8 @@ async def get_img(dress_url):
             soup = BeautifulSoup(html_body,'html.parser')
             dress_divs = soup.find_all("button", class_='product-slideshow__syte-button syte-discovery-modal')
             for divs in dress_divs:
-                imgs.append("title:"+divs.get("data-image-src"))
-                imgs.append("thumbnailUrl:"+dress_url)
+                imgs.append(divs.get("data-image-src"))
+                imgs.append(dress_url)
             return imgs
 
 async def get_urls(url):
@@ -37,21 +38,24 @@ async def fetch_fn():
     task = asyncio.create_task(get_urls("https://www.fashionnova.com/collections/dresses"))
     url_holder = await asyncio.gather(task)
     
-    tasks,task = [],[]
+    j,jholder,tasks,task = [],[],[],[]
 
     for url in url_holder[0]:
        url = "https://www.fashionnova.com"+url
        task = asyncio.create_task(get_img(url))
        tasks.append(task)
     
-    return await asyncio.gather(*tasks)
+    j  = await asyncio.gather(*tasks)
+    for i in j:
+        jholder.append({"url":i[0],"url2":i[1]})
+    return json.dumps(jholder)
 
 @app.route("/")
 def index():
    return loop.run_until_complete(fetch_fn())
     
 if __name__ == "__main__":
-    app.run(debug=False,port=6969)   
+    app.run(debug=True,port=6969)   
 
 
 
