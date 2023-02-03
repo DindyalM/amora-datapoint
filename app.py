@@ -55,7 +55,6 @@ async def fetch_fn():
     return json.dumps(jholder)
 
 @app.route("/")
-@cross_origin(supports_credentials=True)
 def index():
    return loop.run_until_complete(fetch_fn())
     
