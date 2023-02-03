@@ -4,9 +4,13 @@ from bs4 import BeautifulSoup
 from flask import Flask
 import json
 import os
+from flask_cors import CORS, cross_origin
+
 
 loop = asyncio.get_event_loop()
 app = Flask(__name__)
+
+CORS(app, support_credentials=True)
 
 async def get_img(dress_url):
     imgs = []
@@ -51,6 +55,7 @@ async def fetch_fn():
     return json.dumps(jholder)
 
 @app.route("/")
+@cross_origin(supports_credentials=True)
 def index():
    return loop.run_until_complete(fetch_fn())
     
