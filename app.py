@@ -54,16 +54,14 @@ async def fetch_fn():
         jholder.append({"url":i[0],"url2":i[1]})
     return json.dumps(jholder)
 
-async def fetch_sh(url):
-    return False
-
 @app.route("/")
 def index():
    return loop.run_until_complete(fetch_fn())
 
-@app.route("/shein")
-def index():
-    return loop.run_until_complete()
+#@app.route("/shein")
+#def shein():
+    #loop.run_until_complete(fetch_sh())
+   # return "TRUE"
 
 if __name__ == "__main__":
     app.run(debug=True,port=6969)   
