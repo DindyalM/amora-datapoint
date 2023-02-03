@@ -16,6 +16,7 @@ async def get_img(dress_url):
             dress_divs = soup.find_all("button", class_='product-slideshow__syte-button syte-discovery-modal')
             for divs in dress_divs:
                 imgs.append(divs.get("data-image-src"))
+                imgs.append(dress_url)
             return imgs
 
 async def get_urls(url):
@@ -32,7 +33,7 @@ async def get_urls(url):
                     count = count +1
             return urls
 
-async def fetch():   
+async def fetch_fn():   
     task = asyncio.create_task(get_urls("https://www.fashionnova.com/collections/dresses"))
     url_holder = await asyncio.gather(task)
     
@@ -47,7 +48,7 @@ async def fetch():
 
 @app.route("/")
 def index():
-   return loop.run_until_complete(fetch())
+   return loop.run_until_complete(fetch_fn())
     
 if __name__ == "__main__":
     app.run(debug=False,port=6969)   
