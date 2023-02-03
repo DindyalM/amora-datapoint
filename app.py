@@ -12,7 +12,7 @@ app = Flask(__name__)
 
 CORS(app, support_credentials=True)
 
-async def get_img(dress_url):
+async def get_img_fn(dress_url):
     imgs = []
     async with aiohttp.ClientSession() as session:
         async with session.get(dress_url) as res:
@@ -24,7 +24,7 @@ async def get_img(dress_url):
                 imgs.append(dress_url)
             return imgs
 
-async def get_urls(url):
+async def get_urls_fn(url):
     urls = []
     count = 0
     async with aiohttp.ClientSession() as session:
@@ -39,14 +39,14 @@ async def get_urls(url):
             return urls
 
 async def fetch_fn():   
-    task = asyncio.create_task(get_urls("https://www.fashionnova.com/collections/dresses"))
+    task = asyncio.create_task(get_urls_fn("https://www.fashionnova.com/collections/dresses"))
     url_holder = await asyncio.gather(task)
     
     j,jholder,tasks,task = [],[],[],[]
 
     for url in url_holder[0]:
        url = "https://www.fashionnova.com"+url
-       task = asyncio.create_task(get_img(url))
+       task = asyncio.create_task(get_img_fn(url))
        tasks.append(task)
     
     j  = await asyncio.gather(*tasks)
@@ -54,10 +54,17 @@ async def fetch_fn():
         jholder.append({"url":i[0],"url2":i[1]})
     return json.dumps(jholder)
 
+async def fetch_sh(url):
+    return False
+
 @app.route("/")
 def index():
    return loop.run_until_complete(fetch_fn())
-    
+
+@app.route("/shein")
+def index():
+    return loop.run_until_complete()
+
 if __name__ == "__main__":
     app.run(debug=True,port=6969)   
 
