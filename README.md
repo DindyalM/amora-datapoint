@@ -11,4 +11,4 @@ currently when multiple devices connect it returns null at random times:
   
   check it out 
   
-  amora-datapoint.heroku.com
+  https://amora-datapoint.herokuapp.com/
