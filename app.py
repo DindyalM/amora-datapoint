@@ -15,8 +15,8 @@ async def get_img(dress_url):
             soup = BeautifulSoup(html_body,'html.parser')
             dress_divs = soup.find_all("button", class_='product-slideshow__syte-button syte-discovery-modal')
             for divs in dress_divs:
-                imgs.append(divs.get("data-image-src"))
-                imgs.append(dress_url)
+                imgs.append("title:"+divs.get("data-image-src"))
+                imgs.append("thumbnailUrl:"+dress_url)
             return imgs
 
 async def get_urls(url):
