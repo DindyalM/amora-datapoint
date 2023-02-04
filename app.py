@@ -56,7 +56,9 @@ async def fetch_fn():
 
 @app.route("/")
 def index():
-   return loop.run_until_complete(fetch_fn())
+   res = loop.run_until_complete(fetch_fn())
+   loop.close()
+   return res
 
 #@app.route("/shein")
 #def shein():
