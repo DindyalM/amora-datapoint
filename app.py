@@ -65,6 +65,9 @@ async def fetch_sh(dress_url):
                 imgs.append(context)
             ans = filter(lambda k: 'good' in k,list(set(imgs)))
             return list(ans)
+        
+async def fetch_sh_url():
+    return "refactor one day"
 
 @app.route("/")
 def index():
