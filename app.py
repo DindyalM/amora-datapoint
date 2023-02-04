@@ -69,13 +69,12 @@ async def fetch_sh(dress_url):
 @app.route("/")
 def index():
    res = loop.run_until_complete(fetch_fn())
-   loop.close()
    return res
 
 @app.route("/cin")
 def shein():
-   res = loop.run_until_complete(fetch_sh())
-   loop.close()
+   url = "https://www.shopcider.com/collection/dress?link_url=https%3A%2F%2Fm.shopcider.com%2Fcollection%2Fdress&operationpage_title=homepage&operation_position=4&operation_type=category&operation_content=Dresses&listSource=homepage%3Bcollection_dress%3B4"
+   res = loop.run_until_complete(fetch_sh(url))
    return res
 
 if __name__ == "__main__":
