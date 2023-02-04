@@ -54,16 +54,29 @@ async def fetch_fn():
         jholder.append({"url":i[0],"url2":i[1]})
     return json.dumps(jholder)
 
+async def fetch_sh(dress_url):
+    imgs=[]
+    async with aiohttp.ClientSession() as session:
+        async with session.get(dress_url) as res:
+            html_body = await res.text()
+            soup = BeautifulSoup(html_body,'html.parser')
+            dress_divs = soup.find_all("button", class_='product-slideshow__syte-button syte-discovery-modal')
+            for divs in dress_divs:
+                imgs.append(divs.get("data-image-src"))
+                imgs.append(dress_url)
+            return imgs
+
 @app.route("/")
 def index():
    res = loop.run_until_complete(fetch_fn())
    loop.close()
    return res
 
-#@app.route("/shein")
-#def shein():
-    #loop.run_until_complete(fetch_sh())
-   # return "TRUE"
+@app.route("/cin")
+def shein():
+   res = loop.run_until_complete(fetch_sh())
+   loop.close()
+   return res
 
 if __name__ == "__main__":
     app.run(debug=True,port=6969)   
