@@ -64,7 +64,7 @@ async def fetch_sh(dress_url):
                 context = str(a['href'])
                 imgs.append(context)
             ans = filter(lambda k: 'good' in k,list(set(imgs)))
-            return list(ans)
+            return json.dumps(list(ans))
         
 async def fetch_sh_url():
     return "refactor one day"
@@ -81,7 +81,7 @@ def shein():
    return res
 
 if __name__ == "__main__":
-    app.run(debug=True,port=8888)
+    app.run(debug=True,port=6969)
 
 
 
