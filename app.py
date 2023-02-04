@@ -60,25 +60,27 @@ async def fetch_sh(dress_url):
         async with session.get(dress_url) as res:
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
-            dress_divs = soup.find_all("button", class_='product-slideshow__syte-button syte-discovery-modal')
+            dress_divs = soup.find_all("div",class_="cider-image percent")
             for divs in dress_divs:
-                imgs.append(divs.get("data-image-src"))
-                imgs.append(dress_url)
-            return imgs
+                imgs.append(divs)
+                ans = divs.find("div")
+                print(ans.find("a"))
+            return "hello"
 
 @app.route("/")
 def index():
    res = loop.run_until_complete(fetch_fn())
    return res
 
-@app.route("/cin")
+@app.route("/cider")
 def shein():
-   url = "https://www.shopcider.com/collection/dress?link_url=https%3A%2F%2Fm.shopcider.com%2Fcollection%2Fdress&operationpage_title=homepage&operation_position=4&operation_type=category&operation_content=Dresses&listSource=homepage%3Bcollection_dress%3B4"
+   url = "https://www.shopcider.com/collection/dress"
    res = loop.run_until_complete(fetch_sh(url))
    return res
 
 if __name__ == "__main__":
-    app.run(debug=True,port=6969)   
+    app.run(debug=True,port=6969)
+
 
 
 
