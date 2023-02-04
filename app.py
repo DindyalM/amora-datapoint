@@ -59,12 +59,10 @@ async def fetch_sh(dress_url):
         async with session.get(dress_url) as res:
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
-            dress_divs = soup.find_all("div",class_="cider-image percent")
-            print(dress_divs)
-                #for divs in dress_divs:
-                #   imgs.append(divs)
-                #  ans = divs.find("div")
-                # print(ans.find("a"))
+            #like this!
+            for a in soup.find_all('a',class_="cider-link", href=True):
+                print (a['href'])
+                print("girl bye")
             return "hello"
 
 @app.route("/")
@@ -79,7 +77,7 @@ def shein():
    return res
 
 if __name__ == "__main__":
-    app.run(debug=True,port=6969)
+    app.run(debug=True,port=8888)
 
 
 
