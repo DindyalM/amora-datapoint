@@ -6,7 +6,6 @@ import json
 import os
 from flask_cors import CORS, cross_origin
 
-
 loop = asyncio.get_event_loop()
 app = Flask(__name__)
 
@@ -61,10 +60,11 @@ async def fetch_sh(dress_url):
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
             dress_divs = soup.find_all("div",class_="cider-image percent")
-            for divs in dress_divs:
-                imgs.append(divs)
-                ans = divs.find("div")
-                print(ans.find("a"))
+            print(dress_divs)
+                #for divs in dress_divs:
+                #   imgs.append(divs)
+                #  ans = divs.find("div")
+                # print(ans.find("a"))
             return "hello"
 
 @app.route("/")
