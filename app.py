@@ -61,9 +61,10 @@ async def fetch_sh(dress_url):
             soup = BeautifulSoup(html_body,'html.parser')
             #like this!
             for a in soup.find_all('a',class_="cider-link", href=True):
-                print (a['href'])
-                print("girl bye")
-            return "hello"
+                context = str(a['href'])
+                imgs.append(context)
+            ans = filter(lambda k: 'good' in k,list(set(imgs)))
+            return list(ans)
 
 @app.route("/")
 def index():
