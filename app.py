@@ -11,6 +11,7 @@ app = Flask(__name__)
 
 CORS(app, support_credentials=True)
 
+
 async def get_img_fn(dress_url):
     imgs = []
     async with aiohttp.ClientSession() as session:
@@ -52,23 +53,52 @@ async def fetch_fn():
     for i in j:
         jholder.append({"url":i[0],"url2":i[1]})
     return json.dumps(jholder)
+#-------------------------------------------
 
-async def fetch_sh(dress_url):
-    imgs=[]
+async def fetch_urls_sh(url):
     async with aiohttp.ClientSession() as session:
-        async with session.get(dress_url) as res:
+        async with session.get(url) as res:
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
+            print(soup)
             #like this!
-            for a in soup.find_all('a',class_="cider-link", href=True):
-                context = str(a['href'])
-                imgs.append(context)
-            ans = filter(lambda k: 'good' in k,list(set(imgs)))
-            return json.dumps(list(ans))
-        
-async def fetch_sh_url():
-    return "refactor one day"
+        #    for a in soup.find_all('a',class_="cider-link", href=True):
+         #       context = str(a['href'])
+          #      imgs.append(context)
+           # ans = filter(lambda k: 'good' in k,list(set(imgs)))
+           # ans = json.dumps(list(ans))
+            #fetch_img_sh(ans)
+        return "oohohh"
 
+async def fetch_img_sh(url):
+    imgs = []
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as res:
+            html_body = await res.text()
+            soup = BeautifulSoup(html_body,'html.parser')
+            for a in soup.find_all('a',class_="zoom-image-container"):
+                context = str(a['href'])      
+                return "live"
+
+async def fetch_sh():
+    task = asyncio.create_task(fetch_urls_sh("https://www.shopcider.com/collection/dress"))
+    url_holder = await asyncio.gather(task)
+    
+    return url_holder
+    #j,jholder,tasks,task = [],[],[],[]
+
+    #for url in url_holder[0]:
+       #url = "https://www.fashionnova.com"+url
+      # task = asyncio.create_task(get_img_fn(url))
+     #  tasks.append(task)
+    
+    #j  = await asyncio.gather(*tasks)
+    #for i in j:
+     #   jholder.append({"url":i[0],"url2":i[1]})
+    
+    #return json.dumps(jholder)
+    #imgs=[]
+        
 @app.route("/")
 def index():
    res = loop.run_until_complete(fetch_fn())
@@ -76,8 +106,7 @@ def index():
 
 @app.route("/cider")
 def shein():
-   url = "https://www.shopcider.com/collection/dress"
-   res = loop.run_until_complete(fetch_sh(url))
+   res = loop.run_until_complete(fetch_sh())
    return res
 
 if __name__ == "__main__":
