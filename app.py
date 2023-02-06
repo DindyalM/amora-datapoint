@@ -5,6 +5,8 @@ from flask import Flask
 import json
 import os
 from flask_cors import CORS, cross_origin
+import numpy as np
+import pandas as pd
 
 loop = asyncio.get_event_loop()
 app = Flask(__name__)
@@ -61,45 +63,43 @@ async def fetch_urls_sh(url):
         async with session.get(url) as res:
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
-            print(soup)
             #like this!
             for a in soup.find_all('a',class_="cider-link", href=True):
                 context = str(a['href'])
                 imgs.append(context)
             
             ans = filter(lambda k: 'good' in k,list(set(imgs)))
-            ans = json.dumps(list(ans))
-            #fetch_img_sh(ans)
-        return ans
+            return list(ans)
 
 async def fetch_img_sh(url):
     imgs = []
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             html_body = await res.text()
-            soup = BeautifulSoup(html_body,'html.parser')
-            for a in soup.find_all('a',class_="zoom-image-container"):
-                context = str(a['href'])      
-                return "live"
+            soup = BeautifulSoup(html_body,"html.parser")
+            ans = soup.find("script")
+            for child in ans:
+                a = str(json.loads(child)["image"][0])
+                b = str(json.loads(child)["url"])
+                imgs.append([a,b])
+    return imgs
 
 async def fetch_sh():
+    csv_holder = []
     task = asyncio.create_task(fetch_urls_sh("https://www.shopcider.com/collection/dress"))
     url_holder = await asyncio.gather(task)
-    
-    return url_holder
-    #j,jholder,tasks,task = [],[],[],[]
+   
+    j,jholder,tasks,task = [],[],[],[]
 
-    #for url in url_holder[0]:
-       #url = "https://www.fashionnova.com"+url
-      # task = asyncio.create_task(get_img_fn(url))
-     #  tasks.append(task)
-    
-    #j  = await asyncio.gather(*tasks)
-    #for i in j:
-     #   jholder.append({"url":i[0],"url2":i[1]})
-    
-    #return json.dumps(jholder)
-    #imgs=[]
+    for url in url_holder[0]:
+        url = "https://www.shopcider.com"+url
+        task = asyncio.create_task(fetch_img_sh(url))
+        tasks.append(task)
+
+    j  = await asyncio.gather(*tasks)
+    for i in j:
+        jholder.append({"url":i[0][0],"url2":i[0][1]})
+    return json.dumps(jholder)
         
 @app.route("/")
 def index():
@@ -113,7 +113,6 @@ def shein():
 
 if __name__ == "__main__":
     app.run(debug=True,port=6969)
-
 
 
 
