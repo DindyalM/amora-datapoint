@@ -56,19 +56,21 @@ async def fetch_fn():
 #-------------------------------------------
 
 async def fetch_urls_sh(url):
+    imgs = []
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
             print(soup)
             #like this!
-        #    for a in soup.find_all('a',class_="cider-link", href=True):
-         #       context = str(a['href'])
-          #      imgs.append(context)
-           # ans = filter(lambda k: 'good' in k,list(set(imgs)))
-           # ans = json.dumps(list(ans))
+            for a in soup.find_all('a',class_="cider-link", href=True):
+                context = str(a['href'])
+                imgs.append(context)
+            
+            ans = filter(lambda k: 'good' in k,list(set(imgs)))
+            ans = json.dumps(list(ans))
             #fetch_img_sh(ans)
-        return "oohohh"
+        return ans
 
 async def fetch_img_sh(url):
     imgs = []
