@@ -5,8 +5,7 @@ from flask import Flask
 import json
 import os
 from flask_cors import CORS, cross_origin
-import numpy as np
-import pandas as pd
+
 
 loop = asyncio.get_event_loop()
 app = Flask(__name__)
