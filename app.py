@@ -110,20 +110,21 @@ async def fetch_urls_f21(url):
             soup = BeautifulSoup(html_body,'html.parser')
             #like this!
             for ans in soup.find_all("a",href =True):
-                print(ans["href"])
-                print(ans.find("img"))
+                urls.append(ans["href"])
                 #urls.append(ans["href"])
-            #for ans in soup.find_all('img',class_="featured_collection__image"):
-              #  imgs.append(ans["src"])
+            ans = filter(lambda k: '/collections/women-dresses/products/' in k,list(set(urls)))
+            urls = list(ans)
+            
+            ans = filter(lambda k: 'cdn.shopify.com/s/files/1/0484/9585/3721/products/' in k,list(set(imgs)))
+            imgs = list(ans)
 
-           # ans = filter(lambda k: '/collections/women-dresses/products/' in k,list(set(urls)))
-            #urls = list(ans)
-                #context = str(a['href'])
-                #imgs.append(context)
-            #print(set(urls))
-            #print(imgs)
-            
-            
+            for ans1 in urls:
+                for ans2 in imgs:
+                    data.append({"url:"+ans1,"url2:"+ans2})
+            print(len(imgs))
+            print(len(urls))
+            print(data[0])
+            print(data[12])
             return "f21"
 
 async def fetch_f21():
