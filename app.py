@@ -127,7 +127,7 @@ async def fetch_img_f21(url):
                 if(child.find("img")!= None):
                     imgs.append(child.find("img")["src"])
             ans = filter(lambda k: 'cdn.shopify.com/s/files/1/0484/9585/3721/products/' in k,list(set(imgs)))
-            imgs = (str(list(ans))[4:-2],url)
+            imgs = (str(list(ans))[2:-2],url)
     return imgs
 
 async def fetch_f21():
