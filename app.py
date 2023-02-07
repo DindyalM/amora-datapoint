@@ -27,16 +27,13 @@ async def get_img_fn(dress_url):
 
 async def get_urls_fn(url):
     urls = []
-    count = 0
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
             dress_divs= soup.find_all('div', class_='collection-list__product-tile')
             for div in dress_divs:
-                if count  !=10:
-                    urls.append(div.find('a').attrs['href'])
-                    count = count +1
+                urls.append(div.find('a').attrs['href'])
             return urls
 
 async def fetch_fn():   
@@ -101,9 +98,7 @@ async def fetch_sh():
     return json.dumps(jholder)
 #-------------------------------------------
 async def fetch_urls_f21(url):
-    imgs = []
     urls =[]
-    data = []
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             html_body = await res.text()
@@ -111,38 +106,41 @@ async def fetch_urls_f21(url):
             #like this!
             for ans in soup.find_all("a",href =True):
                 urls.append(ans["href"])
-                #urls.append(ans["href"])
+    
             ans = filter(lambda k: '/collections/women-dresses/products/' in k,list(set(urls)))
             urls = list(ans)
-            
-            ans = filter(lambda k: 'cdn.shopify.com/s/files/1/0484/9585/3721/products/' in k,list(set(imgs)))
-            imgs = list(ans)
 
-            for ans1 in urls:
-                for ans2 in imgs:
-                    data.append({"url:"+ans1,"url2:"+ans2})
-            print(len(imgs))
-            print(len(urls))
-            print(data[0])
-            print(data[12])
-            return "f21"
+            return urls
+        
+async def fetch_img_f21(url):
+    imgs = []
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as res:
+            html_body = await res.text()
+            soup = BeautifulSoup(html_body,"html.parser")
+            ans = soup.findAll("ul")
+            for child in ans:
+                if(child.find("img")!= None):
+                    imgs.append(child.find("img")["src"])
+            ans = filter(lambda k: 'cdn.shopify.com/s/files/1/0484/9585/3721/products/' in k,list(set(imgs)))
+            imgs = (str(list(ans))[4:-2],url)
+    return imgs
 
 async def fetch_f21():
-    csv_holder = []
     task = asyncio.create_task(fetch_urls_f21("https://www.forever21.ca/collections/women-dresses"))
     url_holder = await asyncio.gather(task)
    
-   # j,jholder,tasks,task = [],[],[],[]
+    j,jholder,tasks,task = [],[],[],[]
 
-    #for url in url_holder[0]:
-     #   url = "https://www.shopcider.com"+url
-      #  task = asyncio.create_task(fetch_img_sh(url))
-       # tasks.append(task)
+    for url in url_holder[0]:
+        url = "https://www.forever21.ca"+url
+        task = asyncio.create_task(fetch_img_f21(url))
+        tasks.append(task)
 
-    #j  = await asyncio.gather(*tasks)
-    #for i in j:
-     #   jholder.append({"url":i[0][0],"url2":i[0][1]})
-    return "here"
+    j  = await asyncio.gather(*tasks)
+    for i in j:
+        jholder.append({"url":i[0],"url2":i[1]})
+    return json.dumps(jholder)
 
 @app.route("/")
 def index():
