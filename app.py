@@ -99,16 +99,64 @@ async def fetch_sh():
     for i in j:
         jholder.append({"url":i[0][0],"url2":i[0][1]})
     return json.dumps(jholder)
-        
+#-------------------------------------------
+async def fetch_urls_f21(url):
+    imgs = []
+    urls =[]
+    data = []
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as res:
+            html_body = await res.text()
+            soup = BeautifulSoup(html_body,'html.parser')
+            #like this!
+            for ans in soup.find_all("a",href =True):
+                print(ans["href"])
+                print(ans.find("img"))
+                #urls.append(ans["href"])
+            #for ans in soup.find_all('img',class_="featured_collection__image"):
+              #  imgs.append(ans["src"])
+
+           # ans = filter(lambda k: '/collections/women-dresses/products/' in k,list(set(urls)))
+            #urls = list(ans)
+                #context = str(a['href'])
+                #imgs.append(context)
+            #print(set(urls))
+            #print(imgs)
+            
+            
+            return "f21"
+
+async def fetch_f21():
+    csv_holder = []
+    task = asyncio.create_task(fetch_urls_f21("https://www.forever21.ca/collections/women-dresses"))
+    url_holder = await asyncio.gather(task)
+   
+   # j,jholder,tasks,task = [],[],[],[]
+
+    #for url in url_holder[0]:
+     #   url = "https://www.shopcider.com"+url
+      #  task = asyncio.create_task(fetch_img_sh(url))
+       # tasks.append(task)
+
+    #j  = await asyncio.gather(*tasks)
+    #for i in j:
+     #   jholder.append({"url":i[0][0],"url2":i[0][1]})
+    return "here"
+
 @app.route("/")
 def index():
    res = loop.run_until_complete(fetch_fn())
    return res
 
 @app.route("/cider")
-def shein():
+def cider():
    res = loop.run_until_complete(fetch_sh())
    return res
+
+@app.route("/f21")
+def f21():
+    res = loop.run_until_complete(fetch_f21())
+    return res
 
 if __name__ == "__main__":
     app.run(debug=True,port=6969)
