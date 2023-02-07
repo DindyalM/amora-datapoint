@@ -27,13 +27,16 @@ async def get_img_fn(dress_url):
 
 async def get_urls_fn(url):
     urls = []
+    count = 0
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             html_body = await res.text()
             soup = BeautifulSoup(html_body,'html.parser')
             dress_divs= soup.find_all('div', class_='collection-list__product-tile')
             for div in dress_divs:
-                urls.append(div.find('a').attrs['href'])
+                if count  !=10:
+                    urls.append(div.find('a').attrs['href'])
+                    count = count +1
             return urls
 
 async def fetch_fn():   
@@ -55,6 +58,7 @@ async def fetch_fn():
 
 async def fetch_urls_sh(url):
     imgs = []
+    count = 0
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as res:
             html_body = await res.text()
@@ -127,6 +131,7 @@ async def fetch_img_f21(url):
     return imgs
 
 async def fetch_f21():
+    count = 0
     task = asyncio.create_task(fetch_urls_f21("https://www.forever21.ca/collections/women-dresses"))
     url_holder = await asyncio.gather(task)
    
@@ -139,7 +144,9 @@ async def fetch_f21():
 
     j  = await asyncio.gather(*tasks)
     for i in j:
-        jholder.append({"url":i[0],"url2":i[1]})
+        if(count!=10):
+            jholder.append({"url":i[0],"url2":i[1]})
+            count = count + 1
     return json.dumps(jholder)
 
 @app.route("/")
