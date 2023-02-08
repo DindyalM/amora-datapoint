@@ -154,15 +154,17 @@ def index():
    res = loop.run_until_complete(fetch_fn())
    return res
 
+@app.route("/f21")
+def f21():
+    res = loop.run_until_complete(fetch_f21())
+    return res
+
 @app.route("/cider")
 def cider():
    res = loop.run_until_complete(fetch_sh())
    return res
 
-@app.route("/f21")
-def f21():
-    res = loop.run_until_complete(fetch_f21())
-    return res
+
 
 if __name__ == "__main__":
     app.run(debug=True,port=6969)
