@@ -34,7 +34,7 @@ async def get_urls_fn(url):
             soup = BeautifulSoup(html_body,'html.parser')
             dress_divs= soup.find_all('div', class_='collection-list__product-tile')
             for div in dress_divs:
-                if count  !=10:
+                if count  !=30:
                     urls.append(div.find('a').attrs['href'])
                     count = count +1
             return urls
@@ -144,7 +144,7 @@ async def fetch_f21():
 
     j  = await asyncio.gather(*tasks)
     for i in j:
-        if(count!=11):
+        if(count!=30):
             jholder.append({"url":i[0],"url2":i[1]})
             count = count + 1
     return json.dumps(jholder)
